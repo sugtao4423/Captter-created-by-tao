@@ -316,12 +316,15 @@ public class Captter extends JFrame implements ActionListener{
 
 	public String getConverted16_9ImagePath(){
 		try{
+			int width = 1280;
+			int height = 720;
 			File source = new File(backgroundImagePath);
 			String filename = source.getName().substring(0, backgroundImageName.lastIndexOf("."));
-			BufferedImage image = ImageIO.read(source);
-			BufferedImage b = new BufferedImage(1280, 720, BufferedImage.TYPE_INT_ARGB);
+			BufferedImage src = ImageIO.read(source);
+			Image img = src.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+			BufferedImage b = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 			Graphics2D g = b.createGraphics();
-			g.drawImage(image, 0, 0, 1280, 720, null);
+			g.drawImage(img, 0, 0, null);
 			File convertDir = new File(new File(System.getProperty("java.class.path")).getParent() + "/converted");
 			if(!convertDir.exists())
 				convertDir.mkdirs();
