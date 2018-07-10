@@ -1,7 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -93,10 +92,7 @@ public class Settings extends JFrame implements ActionListener{
 		config.addProperties("removeConverted", String.valueOf(exit_RemoveConverted.isSelected()));
 		config.addProperties("removeCapture", String.valueOf(exit_RemoveCapture.isSelected()));
 
-		try{
-			Captter.main(new String[]{});
-		}catch(IOException e){
-		}
+		Captter.main(new String[]{});
 		dispose();
 	}
 }

@@ -61,7 +61,7 @@ public class Captter extends JFrame implements ActionListener{
 	 * Launch the application.
 	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args){
 		Config config = new Config();
 		config.loadTwitter();
 		config.loadConfig();
