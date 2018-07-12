@@ -17,11 +17,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.Timer;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import sugtao4423.captter.AutoChecker.OnNewFileListener;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -176,8 +178,17 @@ public class Captter extends JFrame implements ActionListener{
 			}
 		});
 
-		Thread acThread = new Thread(new AutoChecker(config.getTargetDir()));
-		acThread.start();
+		AutoChecker ac = new AutoChecker(config.getTargetDir());
+		ac.setOnNewFileListener(new OnNewFileListener(){
+
+			@Override
+			public void onNewFile(String filename){
+				backgroundImagePath = ac.getTargetDir() + "/" + filename;
+				backgroundImageName = filename;
+				setBackgroundImage();
+			}
+		});
+		new Timer(false).schedule(ac, 0, 1000);
 	}
 
 	@Override
@@ -197,35 +208,27 @@ public class Captter extends JFrame implements ActionListener{
 
 			@Override
 			public void run(){
-				StatusUpdate status;
+				StatusUpdate status = new StatusUpdate(textAreaText + " " + textFieldText);
 				if(backgroundImagePath != null){
 					String path;
 					if(!is16_9 && convert.isSelected())
 						path = getConverted16_9ImagePath();
 					else
 						path = backgroundImagePath;
-					clear();
-					status = new StatusUpdate(textAreaText + " " + textFieldText);
 					status.media(new File(path));
-				}else{
-					clear();
-					status = new StatusUpdate(textAreaText + " " + textFieldText);
 				}
-				try{
-					twitter.updateStatus(status);
-				}catch(TwitterException e){
-					JOptionPane.showMessageDialog(Captter.this, "ツイートできませんでした");
-					return;
-				}
-			}
-
-			public void clear(){
 				textArea.setText("");
 				textArea.requestFocus();
 				imageField.setText("");
 				imageField.setIcon(null);
 				backgroundImagePath = null;
 				backgroundImageName = null;
+				try{
+					twitter.updateStatus(status);
+				}catch(TwitterException e){
+					JOptionPane.showMessageDialog(Captter.this, "ツイートできませんでした");
+					return;
+				}
 			}
 		}).start();
 	}
@@ -309,47 +312,4 @@ public class Captter extends JFrame implements ActionListener{
 		}
 	}
 
-	class AutoChecker implements Runnable{
-
-		private File targetDir;
-
-		private long checkInterval = 1000L;
-		protected boolean fStop;
-		protected ArrayList<String> fRegistereds;
-
-		public AutoChecker(String targetDir){
-			this.targetDir = new File(targetDir);
-			fStop = false;
-			fRegistereds = new ArrayList<String>();
-		}
-
-		@Override
-		public void run(){
-			while(!fStop){
-				try{
-					Thread.sleep(checkInterval);
-					checkNew();
-				}catch(InterruptedException e){
-				}
-			}
-		}
-
-		public void stop(){
-			fStop = true;
-		}
-
-		protected void checkNew(){
-			String[] files = targetDir.list();
-			for(String file : files){
-				if(!fRegistereds.contains(file)){
-					fRegistereds.add(file);
-					if(file.matches("^.*\\.(jpg|png|bmp)$")){
-						backgroundImagePath = targetDir + "/" + file;
-						backgroundImageName = file;
-						setBackgroundImage();
-					}
-				}
-			}
-		}
-	}
 }
