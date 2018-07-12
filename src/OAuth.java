@@ -27,7 +27,7 @@ import javax.swing.JLabel;
 
 public class OAuth extends JFrame implements ActionListener{
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4736794014597982202L;
 
 	private JPanel contentPane;
 	private JTextField textField;
@@ -67,7 +67,17 @@ public class OAuth extends JFrame implements ActionListener{
 		textField.addKeyListener(new KeyAdapter(){
 			@Override
 			public void keyPressed(KeyEvent e){
-				key(e);
+				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					try{
+						String pin = textField.getText();
+						AccessToken token = twitter.getOAuthAccessToken(req, pin);
+						config.addProperties("AT", token.getToken());
+						config.addProperties("ATS", token.getTokenSecret());
+						new Settings().setVisible(true);
+						dispose();
+					}catch(TwitterException e1){
+					}
+				}
 			}
 		});
 		contentPane.add(textField);
@@ -77,6 +87,7 @@ public class OAuth extends JFrame implements ActionListener{
 		contentPane.add(lblEnterGetPin);
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent event){
 		if(event.getSource() == start){
 			try{
@@ -89,17 +100,4 @@ public class OAuth extends JFrame implements ActionListener{
 		}
 	}
 
-	public void key(KeyEvent e){
-		if(e.getKeyCode() == KeyEvent.VK_ENTER){
-			try{
-				String pin = textField.getText();
-				AccessToken token = twitter.getOAuthAccessToken(req, pin);
-				config.addProperties("AT", token.getToken());
-				config.addProperties("ATS", token.getTokenSecret());
-				new Settings().setVisible(true);
-				dispose();
-			}catch(TwitterException e1){
-			}
-		}
-	}
 }

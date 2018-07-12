@@ -4,12 +4,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.AccessToken;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
+
 public class Config{
 
 	private File propFile;
 	private Properties p;
 
-	private String ck, cs, at, ats, targetDir;
+	private String at, ats, targetDir;
 	private boolean removeConverted, removeCapture;
 
 	public Config(){
@@ -23,32 +29,34 @@ public class Config{
 			p.load(fis);
 			fis.close();
 		}catch(IOException e){
+			System.exit(1);
 		}
-	}
-
-	public void loadTwitter(){
-		ck = Keys.ck;
-		cs = Keys.cs;
-		at = p.getProperty("AT", "");
-		ats = p.getProperty("ATS", "");
-	}
-
-	public void loadConfig(){
+		at = p.getProperty("AT", null);
+		ats = p.getProperty("ATS", null);
 		targetDir = p.getProperty("targetDir", "");
 		removeConverted = Boolean.valueOf(p.getProperty("removeConverted", "false"));
 		removeCapture = Boolean.valueOf(p.getProperty("removeCapture", "false"));
 	}
 
-	public String[] getTwitter(){
-		return new String[]{ck, cs, at, ats};
+	public Twitter getTwitter(){
+		if(at == null || ats == null){
+			return null;
+		}
+		Configuration conf = new ConfigurationBuilder().setOAuthConsumerKey(Keys.ck).setOAuthConsumerSecret(Keys.cs).build();
+		AccessToken accessToken = new AccessToken(at, ats);
+		return new TwitterFactory(conf).getInstance(accessToken);
 	}
 
 	public String getTargetDir(){
 		return targetDir;
 	}
 
-	public boolean[] getRemoves(){
-		return new boolean[]{removeConverted, removeCapture};
+	public boolean removeConverted(){
+		return removeConverted;
+	}
+
+	public boolean removeCapture(){
+		return removeCapture;
 	}
 
 	public void addProperties(String key, String value){

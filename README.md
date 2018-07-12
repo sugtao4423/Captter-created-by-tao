@@ -37,7 +37,7 @@ Consumer KeyとConsumer Secretは画像の通りです。
 1. メイン画面が表示されます  
 ![3](https://github.com/sugtao4423/Captter-created-by-tao/blob/master/3.png)
 
-##メイン画面の説明
+## メイン画面の説明
 画像が認識されると、上のテキストボックスの背景にその画像が表示されると共に、画像の右側に縦横比が表示されます。  
 ツイートの書式は以下の通りです  
 ```

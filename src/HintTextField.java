@@ -8,7 +8,9 @@ import java.awt.event.FocusListener;
 import javax.swing.JTextField;
 
 public class HintTextField extends JTextField{
-	private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = -7442257898349966527L;
+
 	private String hint;
 
 	public void setHint(String hint){

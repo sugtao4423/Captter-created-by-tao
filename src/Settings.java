@@ -13,7 +13,7 @@ import javax.swing.JCheckBox;
 
 public class Settings extends JFrame implements ActionListener{
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 379941542812239568L;
 
 	private JPanel contentPane;
 	private JTextField textField;
@@ -21,7 +21,7 @@ public class Settings extends JFrame implements ActionListener{
 	private JLabel lb;
 	private JButton save;
 
-	private JCheckBox exit_RemoveConverted, exit_RemoveCapture;
+	private JCheckBox removeConverted, removeCapture;
 	private Config config;
 
 	/**
@@ -29,7 +29,6 @@ public class Settings extends JFrame implements ActionListener{
 	 */
 	public Settings(){
 		config = new Config();
-		config.loadConfig();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("設定");
@@ -58,24 +57,24 @@ public class Settings extends JFrame implements ActionListener{
 		save.addActionListener(this);
 		contentPane.add(save);
 
-		boolean[] removes = config.getRemoves();
+		removeConverted = new JCheckBox("プログラム終了時にconvertedフォルダの中身を削除");
+		removeConverted.setBounds(6, 85, 414, 23);
+		removeConverted.setSelected(config.removeConverted());
+		contentPane.add(removeConverted);
 
-		exit_RemoveConverted = new JCheckBox("プログラム終了時にconvertedフォルダの中身を削除");
-		exit_RemoveConverted.setBounds(6, 85, 414, 23);
-		exit_RemoveConverted.setSelected(removes[0]);
-		contentPane.add(exit_RemoveConverted);
-
-		exit_RemoveCapture = new JCheckBox("プログラム終了時にキャプチャフォルダの中身を削除");
-		exit_RemoveCapture.setBounds(6, 110, 414, 23);
-		exit_RemoveCapture.setSelected(removes[1]);
-		contentPane.add(exit_RemoveCapture);
+		removeCapture = new JCheckBox("プログラム終了時にキャプチャフォルダの中身を削除");
+		removeCapture.setBounds(6, 110, 414, 23);
+		removeCapture.setSelected(config.removeCapture());
+		contentPane.add(removeCapture);
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent event){
-		if(event.getSource() == find)
+		if(event.getSource() == find){
 			selectDirectory();
-		else if(event.getSource() == save)
+		}else if(event.getSource() == save){
 			save();
+		}
 	}
 
 	public void selectDirectory(){
@@ -89,8 +88,8 @@ public class Settings extends JFrame implements ActionListener{
 
 	public void save(){
 		config.addProperties("targetDir", textField.getText());
-		config.addProperties("removeConverted", String.valueOf(exit_RemoveConverted.isSelected()));
-		config.addProperties("removeCapture", String.valueOf(exit_RemoveCapture.isSelected()));
+		config.addProperties("removeConverted", String.valueOf(removeConverted.isSelected()));
+		config.addProperties("removeCapture", String.valueOf(removeCapture.isSelected()));
 
 		Captter.main(new String[]{});
 		dispose();
