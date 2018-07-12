@@ -1,3 +1,5 @@
+package sugtao4423.captter;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
