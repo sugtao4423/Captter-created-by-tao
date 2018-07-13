@@ -267,9 +267,9 @@ public class Captter extends JFrame implements ActionListener{
 			Graphics2D g = targetBufferedImage.createGraphics();
 			g.drawImage(targetImage, 0, 0, null);
 
-			Rectangle2D rect = new Rectangle2D.Double(0, 0, sourceWidht, sourceHeight);
 			g.setColor(new Color(255, 255, 255, 170));
-			g.fill(rect);
+			g.fill(new Rectangle2D.Double(0, 0, sourceWidht, sourceHeight));
+			g.dispose();
 
 			int gcd = getGCD(sourceWidht, sourceHeight);
 			int w = sourceWidht / gcd;
@@ -302,6 +302,7 @@ public class Captter extends JFrame implements ActionListener{
 			BufferedImage b = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 			Graphics2D g = b.createGraphics();
 			g.drawImage(img, 0, 0, null);
+			g.dispose();
 			if(!convertedDir.exists())
 				convertedDir.mkdirs();
 			String outFilePath = convertedDir + "/" + filename + "_convert.png";
